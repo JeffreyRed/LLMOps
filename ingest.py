@@ -12,7 +12,7 @@ from rich.console import Console
 
 from config import EMBEDDING_MODEL, CHROMA_DB_PATH, validate_config
 
-console = Console()
+console = Console() 
 
 # ── How many Wikipedia articles to ingest ─────────
 NUM_ARTICLES = 200  # increase for a richer knowledge base
