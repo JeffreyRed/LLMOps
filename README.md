@@ -2,7 +2,8 @@
 
 > An **LLMOps** project demonstrating an agentic Retrieval-Augmented Generation (RAG) pipeline with full observability — built with free tools and open-source models.
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![CI](https://github.com/YOUR_USERNAME/agentic-rag-pipeline/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![LangChain](https://img.shields.io/badge/LangChain-0.3-green)
 ![Groq](https://img.shields.io/badge/LLM-Groq%20%7C%20LLaMA%203.3%2070B-orange)
 ![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-purple)
@@ -18,6 +19,7 @@ This project implements an **agentic RAG pipeline** — the agent decides:
 - ✅ **When** it has enough context to answer confidently
 
 All agent decisions are **traced and logged** to LangSmith for full LLMOps observability.
+Every push to `main` automatically runs linting, unit tests, and a prompt evaluation gate via GitHub Actions CI.
 
 ---
 
@@ -61,6 +63,7 @@ User Question
 | Vector Store | ChromaDB | Local, persistent, no server needed |
 | Orchestration | LangChain | Industry-standard agent framework |
 | Observability | LangSmith | Traces every agent decision |
+| CI/CD | GitHub Actions | Auto-runs evals on every push |
 | Dataset | HuggingFace `wikipedia` | Free, no login needed |
 
 ---
@@ -72,6 +75,13 @@ User Question
 ```bash
 git clone https://github.com/YOUR_USERNAME/agentic-rag-pipeline.git
 cd agentic-rag-pipeline
+
+# With conda (recommended)
+conda create -n agentic-rag python=3.11 -y
+conda activate agentic-rag
+pip install -r requirements.txt
+
+# Or with venv
 python -m venv venv && source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
@@ -80,32 +90,34 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env and add your keys:
-# - GROQ_API_KEY from https://console.groq.com (free)
-# - LANGCHAIN_API_KEY from https://smith.langchain.com (free)
+# Edit .env and fill in your keys:
+# - GROQ_API_KEY      → https://console.groq.com       (free)
+# - LANGCHAIN_API_KEY → https://smith.langchain.com    (free)
 ```
+
+> ⚠️ `.env` is git-ignored and will never be committed. See [CI_SETUP.md](./CI_SETUP.md) for how to add secrets to GitHub Actions.
 
 ### 3. Ingest the Wikipedia dataset
 
 ```bash
-python src/ingest.py
+python ingest.py
 ```
 
-This downloads 200 Wikipedia articles, chunks them, embeds them locally, and saves to ChromaDB. Takes ~2-3 minutes on first run.
+Downloads 200 Wikipedia articles, chunks them, embeds them locally, and saves to ChromaDB. Takes ~2-3 minutes on first run.
 
 ### 4. Run the agent
 
 ```bash
-python src/agent.py
+python agent.py
 ```
 
 ### 5. Run evaluations
 
 ```bash
-python src/evaluate.py
+python evaluate.py
 ```
 
-Generates a `data/eval_report.json` with scores and latency metrics.
+Generates `data/eval_report.json` with keyword scores and latency metrics per question.
 
 ---
 
@@ -113,18 +125,26 @@ Generates a `data/eval_report.json` with scores and latency metrics.
 
 ```
 agentic-rag-pipeline/
-├── src/
-│   ├── config.py       # Loads .env settings
-│   ├── ingest.py       # Dataset loading, chunking, embedding
-│   ├── retriever.py    # ChromaDB retriever as LangChain tool
-│   ├── agent.py        # Agentic RAG — main entry point
-│   └── evaluate.py     # LLMOps evaluation suite
+├── .github/
+│   └── workflows/
+│       └── ci.yml          # GitHub Actions — runs on every push
+├── tests/
+│   └── test_pipeline.py    # Unit tests (chunking, scoring, config)
 ├── data/
-│   ├── chroma_db/      # Persisted vector store (git-ignored)
-│   └── eval_report.json
-├── .env.example        # Template — copy to .env and fill keys
-├── .gitignore          # .env is never committed
-└── requirements.txt
+│   ├── chroma_db/          # Persisted vector store (git-ignored)
+│   └── eval_report.json    # Latest evaluation results
+├── agent.py                # Agentic RAG — main entry point
+├── config.py               # Loads .env settings safely
+├── ingest.py               # Dataset loading, chunking, embedding
+├── retriever.py            # ChromaDB retriever as LangChain tool
+├── evaluate.py             # LLMOps evaluation suite
+├── pytest.ini              # Test configuration
+├── .env                    # Your secrets — never committed ⚠️
+├── .env.example            # Template — safe to commit ✅
+├── .gitignore              # Blocks .env and chroma_db/
+├── CI_SETUP.md             # How to add GitHub secrets for CI
+├── environment.yml         # Conda environment (reproducible)
+└── requirements.txt        # Python dependencies
 ```
 
 ---
@@ -137,14 +157,46 @@ agentic-rag-pipeline/
 | **Prompt engineering** | System prompt in `agent.py` |
 | **Observability / Tracing** | LangSmith traces every run |
 | **Evaluation pipeline** | `evaluate.py` — keyword scoring + latency |
-| **Config management** | `.env` + `config.py` — no hardcoded secrets |
+| **Config & secrets management** | `.env` + `config.py` — no hardcoded keys |
 | **Vector store lifecycle** | Ingest → Embed → Query → Retrieve |
+| **CI/CD quality gate** | GitHub Actions blocks merges if eval score drops |
+| **Reproducibility** | `environment.yml` + `requirements.txt` |
+
+---
+
+## ⚙️ CI/CD Pipeline
+
+Every `git push` to `main` triggers 3 automated jobs:
+
+```
+Push → GitHub Actions
+         │
+         ├── 1. lint    → Black (auto-format) + Flake8 (errors)
+         │                ↓ pass
+         ├── 2. test    → pytest unit tests (no API calls, fast)
+         │                ↓ pass
+         └── 3. eval    → runs agent on test questions
+                          fails if avg score < 0.35 ← quality gate
+```
+
+### ✅ Latest Test Results
+
+| Job | Status | Details |
+|---|---|---|
+| 🔍 Lint | ![pass](https://img.shields.io/badge/black-formatted-black) ![pass](https://img.shields.io/badge/flake8-passing-green) | Auto-formatted + no errors |
+| 🧪 Unit Tests | ![pass](https://img.shields.io/badge/pytest-14%20passed-brightgreen) | Chunking, scoring, config, quality gate |
+| 📊 Eval | ![pass](https://img.shields.io/badge/avg%20score-%3E0.35-brightgreen) | 5 questions · keyword scoring · latency logged |
+
+> Live CI status is shown by the badge at the top of this README.
+> Every run saves an `eval_report.json` artifact downloadable from the [Actions tab](../../actions).
+
+See [CI_SETUP.md](./CI_SETUP.md) for setup instructions.
 
 ---
 
 ## 📸 LangSmith Trace Example
 
-After running the agent, go to [smith.langchain.com](https://smith.langchain.com) → your project `agentic-rag-pipeline` to see full traces like:
+After running the agent, go to [smith.langchain.com](https://smith.langchain.com) → project `agentic-rag-pipeline`:
 
 ```
 Run: "What causes earthquakes?"
