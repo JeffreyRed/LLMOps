@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-05T09:56:24.230363",
+  "model": "llama-3.3-70b-versatile",
+  "num_questions": 5,
+  "avg_score": 0.72,
+  "avg_latency_s": 1.24,
+  "results": [
+    {
+      "question": "What is photosynthesis?",
+      "answer": "Photosynthesis is the process by which green plants, algae, and some bacteria convert light energy, usually from the sun, into chemical energy stored in glucose, a type of sugar. This process occurs in specialized organelles called chloroplasts and is essential for life on Earth as it provides the primary source of energy for nearly all organisms either directly (for autotrophs) or indirectly (for heterotrophs). The equation for photosynthesis can be simplified as: 6CO2 + 6H2O + light energy \u2192 C6H12O6 (glucose) + 6O2. This information came from the Wikipedia article on \"Photosynthesis\".",
+      "score": 0.6,
+      "latency_s": 1.4,
+      "status": "\u2705 PASS"
+    },
+    {
+      "question": "Who was Albert Einstein and what is he known for?",
+      "answer": "Albert Einstein was a renowned German-born theoretical physicist who is widely regarded as one of the greatest physicists of all time. He is best known for developing the theory of relativity and the famous equation E=mc\u00b2, which arises from relativity theory. Einstein's work had a significant impact on the development of modern physics, and he was awarded the Nobel Prize in Physics in 1921 for his discovery of the law of the photoelectric effect. He is also known for his influence on the philosophy of science and his pacifist views. Einstein's work and legacy continue to be celebrated and studied by scientists and scholars around the world. The information about Albert Einstein came from his Wikipedia page.",
+      "score": 1.0,
+      "latency_s": 1.2,
+      "status": "\u2705 PASS"
+    },
+    {
+      "question": "What causes earthquakes?",
+      "answer": "Earthquakes are caused by the movement of tectonic plates in the Earth's crust. The Earth's crust is made up of several large plates that float on the mantle, and as they move, they can get stuck at their boundaries. When the stress becomes too great, the plates will suddenly move, releasing the stored energy as seismic waves, which is what causes the ground to shake during an earthquake. This information came from the Wikipedia article on Earthquakes.",
+      "score": 0.75,
+      "latency_s": 1.06,
+      "status": "\u2705 PASS"
+    },
+    {
+      "question": "What is the theory of evolution?",
+      "answer": "The theory of evolution is a fundamental concept in biology that explains how species change and adapt over time through the process of natural selection, genetic drift, mutation, and gene flow. According to the theory, all living organisms share a common ancestor and have evolved over millions of years through a series of small changes in their genetic material. This theory was first proposed by Charles Darwin in his book \"On the Origin of Species\" in 1859 and has since been widely accepted by the scientific community. The theory of evolution is supported by a vast amount of evidence from various fields, including genetics, paleontology, comparative anatomy, and molecular biology. It is considered one of the most well-established and widely accepted theories in science. (Information from the Wikipedia article \"Theory of Evolution\")",
+      "score": 0.75,
+      "latency_s": 1.14,
+      "status": "\u2705 PASS"
+    },
+    {
+      "question": "How does the human immune system work?",
+      "answer": "The human immune system is a complex system that protects the body against pathogens, such as bacteria, viruses, and other foreign substances. According to the Wikipedia article on the human immune system, it consists of multiple layers of defense, including physical barriers, cellular responses, and molecular responses.\n\nThe first line of defense is the skin and mucous membranes, which provide a physical barrier against pathogens. If a pathogen enters the body, the immune system responds with an inflammatory response, which involves the activation of immune cells, such as neutrophils and macrophages, to fight the infection.\n\nThe immune system also has a specific response, which involves the activation of lymphocytes, such as T cells and B cells, to recognize and attack specific pathogens. This response is mediated by the production of antibodies, which are proteins that bind to specific pathogens and mark them for destruction.\n\nThe human immune system is also capable of remembering specific pathogens and mounting a rapid response if they enter the body again. This is known as immunological memory, and it is the basis for vaccination, which involves exposing the body to a small, harmless piece of a pathogen to stimulate an immune response and provide protection against future infections.\n\nOverall, the human immune system is a complex and highly effective system that plays a crucial role in protecting the body against infection and disease.",
+      "score": 0.5,
+      "latency_s": 1.39,
+      "status": "\u2705 PASS"
+    }
+  ]
+}
