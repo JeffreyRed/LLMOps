@@ -1,6 +1,7 @@
 """
 config.py — Loads all settings from .env
 """
+
 import os
 from dotenv import load_dotenv
 
@@ -17,6 +18,7 @@ CHROMA_DB_PATH = os.getenv("CHROMA_DB_PATH", "./data/chroma_db")
 # ── LangSmith Observability ───────────────────────
 # These are read automatically by LangChain if set in .env:
 # LANGCHAIN_API_KEY, LANGCHAIN_TRACING_V2, LANGCHAIN_PROJECT
+
 
 def validate_config():
     """Raise early if required keys are missing."""

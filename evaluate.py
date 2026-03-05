@@ -4,6 +4,7 @@ and log results (pass/fail + latency) to a JSON report.
 
 Run: python src/evaluate.py
 """
+
 import json
 import time
 from datetime import datetime
@@ -19,7 +20,13 @@ console = Console()
 EVAL_QUESTIONS = [
     {
         "question": "What is photosynthesis?",
-        "expected_keywords": ["light", "chlorophyll", "glucose", "plant", "carbon dioxide"],
+        "expected_keywords": [
+            "light",
+            "chlorophyll",
+            "glucose",
+            "plant",
+            "carbon dioxide",
+        ],
     },
     {
         "question": "Who was Albert Einstein and what is he known for?",
@@ -75,13 +82,15 @@ def run_evaluation():
             score = 0.0
             status = "❌ FAIL"
 
-        results.append({
-            "question": question,
-            "answer": answer,
-            "score": score,
-            "latency_s": latency,
-            "status": status,
-        })
+        results.append(
+            {
+                "question": question,
+                "answer": answer,
+                "score": score,
+                "latency_s": latency,
+                "status": status,
+            }
+        )
 
         table.add_row(question[:60], str(score), str(latency), status)
 
@@ -101,7 +110,9 @@ def run_evaluation():
     report_path.parent.mkdir(exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2))
     console.print(f"\n[green]📄 Report saved to {report_path}[/green]")
-    console.print(f"[bold]Average score: {report['avg_score']} | Avg latency: {report['avg_latency_s']}s[/bold]")
+    console.print(
+        f"[bold]Average score: {report['avg_score']} | Avg latency: {report['avg_latency_s']}s[/bold]"
+    )
 
 
 if __name__ == "__main__":

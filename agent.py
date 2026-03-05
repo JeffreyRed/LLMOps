@@ -8,6 +8,7 @@ The agent decides:
 
 All decisions and traces are logged to LangSmith automatically.
 """
+
 from langchain_groq import ChatGroq
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -41,7 +42,7 @@ def build_agent():
     llm = ChatGroq(
         api_key=GROQ_API_KEY,
         model=LLM_MODEL,
-        temperature=0.1,       # Low temp for factual accuracy
+        temperature=0.1,  # Low temp for factual accuracy
         max_tokens=1024,
     )
 
@@ -49,20 +50,22 @@ def build_agent():
     tools = [load_retriever_tool()]
 
     # ── Prompt template ───────────────────────────
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", SYSTEM_PROMPT),
-        MessagesPlaceholder("chat_history", optional=True),
-        ("human", "{input}"),
-        MessagesPlaceholder("agent_scratchpad"),   # where agent reasoning goes
-    ])
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", SYSTEM_PROMPT),
+            MessagesPlaceholder("chat_history", optional=True),
+            ("human", "{input}"),
+            MessagesPlaceholder("agent_scratchpad"),  # where agent reasoning goes
+        ]
+    )
 
     # ── Build agent ───────────────────────────────
     agent = create_tool_calling_agent(llm=llm, tools=tools, prompt=prompt)
     agent_executor = AgentExecutor(
         agent=agent,
         tools=tools,
-        verbose=True,           # prints agent reasoning steps
-        max_iterations=5,       # prevent infinite loops
+        verbose=True,  # prints agent reasoning steps
+        max_iterations=5,  # prevent infinite loops
         handle_parsing_errors=True,
     )
     return agent_executor
@@ -70,12 +73,14 @@ def build_agent():
 
 def run_interactive_session():
     """Run a multi-turn chat session in the terminal."""
-    console.print(Panel.fit(
-        "[bold green]🤖 Agentic RAG Pipeline[/bold green]\n"
-        "[dim]Powered by Groq (LLaMA 3.3 70B) + ChromaDB + LangSmith[/dim]\n"
-        "Type [bold]exit[/bold] to quit.",
-        border_style="green"
-    ))
+    console.print(
+        Panel.fit(
+            "[bold green]🤖 Agentic RAG Pipeline[/bold green]\n"
+            "[dim]Powered by Groq (LLaMA 3.3 70B) + ChromaDB + LangSmith[/dim]\n"
+            "Type [bold]exit[/bold] to quit.",
+            border_style="green",
+        )
+    )
 
     agent = build_agent()
     chat_history = []
@@ -96,10 +101,12 @@ def run_interactive_session():
         console.print("\n[bold yellow]Agent thinking...[/bold yellow]")
 
         try:
-            result = agent.invoke({
-                "input": user_input,
-                "chat_history": chat_history,
-            })
+            result = agent.invoke(
+                {
+                    "input": user_input,
+                    "chat_history": chat_history,
+                }
+            )
 
             answer = result["output"]
 
@@ -107,11 +114,13 @@ def run_interactive_session():
             chat_history.append(HumanMessage(content=user_input))
             chat_history.append(AIMessage(content=answer))
 
-            console.print(Panel(
-                Markdown(answer),
-                title="[bold green]Agent[/bold green]",
-                border_style="green"
-            ))
+            console.print(
+                Panel(
+                    Markdown(answer),
+                    title="[bold green]Agent[/bold green]",
+                    border_style="green",
+                )
+            )
 
         except Exception as e:
             console.print(f"[bold red]Error:[/bold red] {e}")

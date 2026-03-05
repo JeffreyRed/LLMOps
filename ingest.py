@@ -2,6 +2,7 @@
 ingest.py — Load Wikipedia dataset → chunk → embed → store in ChromaDB
 Run once before using the agent: python src/ingest.py
 """
+
 from datasets import load_dataset
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -53,7 +54,9 @@ def chunk_documents(texts: list[str]) -> list[str]:
 
 def build_vector_store(chunks: list[str]) -> Chroma:
     """Embed chunks with a local HuggingFace model and persist to ChromaDB."""
-    console.print(f"[bold cyan]🧠 Loading embedding model: {EMBEDDING_MODEL}...[/bold cyan]")
+    console.print(
+        f"[bold cyan]🧠 Loading embedding model: {EMBEDDING_MODEL}...[/bold cyan]"
+    )
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
     console.print("[bold cyan]💾 Building ChromaDB vector store...[/bold cyan]")
@@ -71,4 +74,6 @@ if __name__ == "__main__":
     raw_docs = load_wikipedia_docs()
     chunks = chunk_documents(raw_docs)
     build_vector_store(chunks)
-    console.print("\n[bold green]🎉 Ingestion complete! You can now run the agent.[/bold green]")
+    console.print(
+        "\n[bold green]🎉 Ingestion complete! You can now run the agent.[/bold green]"
+    )
