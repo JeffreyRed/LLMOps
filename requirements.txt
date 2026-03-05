@@ -1,0 +1,21 @@
+# LLM & Agent Orchestration
+langchain==0.3.14
+langchain-groq==0.2.4
+langchain-community==0.3.14
+langchain-huggingface==0.1.2
+
+# Vector Store
+chromadb==0.6.3
+
+# Embeddings
+sentence-transformers==3.4.1
+
+# Dataset loading
+datasets==3.3.2
+
+# Environment
+python-dotenv==1.0.1
+
+# Utilities
+tqdm==4.67.1
+rich==13.9.4
