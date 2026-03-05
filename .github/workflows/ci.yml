@@ -41,13 +41,13 @@ jobs:
 
       - name: Check formatting with Black
         run: |
-          black --check src/
+          black --check *.py
         # Black enforces consistent code style.
         # If formatting is wrong, the CI fails and tells you exactly what to fix.
 
       - name: Lint with Flake8
         run: |
-          flake8 src/ --max-line-length=100 --ignore=E203,W503
+          flake8 *.py --max-line-length=100 --ignore=E203,W503
         # Catches unused imports, undefined variables, syntax errors, etc.
 
   # ── Job 2: Unit Tests ────────────────────────────────────
@@ -84,7 +84,7 @@ jobs:
           LANGCHAIN_TRACING_V2: "true"
           LANGCHAIN_PROJECT: "agentic-rag-ci"
         run: |
-          pytest tests/ -v --cov=src --cov-report=term-missing
+          pytest tests/ -v --cov=. --cov-report=term-missing
         # --cov generates a coverage report showing which lines of code
         # are actually tested. Aim for >70% coverage.
 
@@ -117,7 +117,7 @@ jobs:
           python -c "
           import os
           os.environ['NUM_ARTICLES_OVERRIDE'] = '20'
-          exec(open('src/ingest.py').read())
+          exec(open('ingest.py').read())
           "
 
       - name: Run evaluation suite
@@ -127,7 +127,7 @@ jobs:
           LANGCHAIN_TRACING_V2: "true"
           LANGCHAIN_PROJECT: "agentic-rag-ci"
         run: |
-          python src/evaluate.py
+          python evaluate.py
 
       - name: Check eval score threshold
         run: |
